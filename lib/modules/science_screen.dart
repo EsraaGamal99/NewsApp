@@ -16,6 +16,6 @@ class SciencesScreen extends StatelessWidget {
       {
       var list = AppCubit.get(context).science;
         //AppCubit cubit = AppCubit.get(context);
-        return NewsScreenBuilder(list);
+        return NewsScreenBuilder(list,context);
       },);
   }}

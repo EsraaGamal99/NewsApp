@@ -40,4 +40,6 @@ class NewsGetScienceDataErrorState extends NewsStates
   NewsGetScienceDataErrorState(this.error);
 }
 
+class AppChangeMode extends NewsStates{}
+
 

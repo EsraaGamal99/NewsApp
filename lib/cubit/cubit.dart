@@ -114,4 +114,10 @@ List <dynamic> science =[];
       emit(NewsGetScienceDataSuccessState());
     }
   }
+
+ bool isDark = false;
+  changeThemeMode(){
+    isDark = !isDark;
+    emit(AppChangeMode());
+}
 }

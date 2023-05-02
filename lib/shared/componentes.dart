@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/cubit.dart';
 import '../cubit/states.dart';
 
-Widget buildArticleItem(article)=> Padding(
+Widget buildArticleItem(article,context)=> Padding(
   padding: const EdgeInsets.all(15.0),
   child: Row(
     children: [
@@ -37,9 +37,8 @@ Widget buildArticleItem(article)=> Padding(
                 child: Text('${article['title']}',
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
               Text('${article['publishedAt']}'),
             ],
@@ -50,13 +49,13 @@ Widget buildArticleItem(article)=> Padding(
   ),
 );
 
-Widget NewsScreenBuilder(list) =>
+Widget NewsScreenBuilder(list,context) =>
     ConditionalBuilder(
       condition: list.length>0,
       builder: (context)=>
           ListView.separated(
               physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) => buildArticleItem(list[index]),
+              itemBuilder: (context, index) => buildArticleItem(list[index],context),
               separatorBuilder: (context, index) =>
                   Divider(color: Colors.grey),
               itemCount: list.length),

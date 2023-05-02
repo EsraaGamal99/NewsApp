@@ -14,6 +14,6 @@ class BusinessScreen extends StatelessWidget {
 
       builder: (context, state){
         var list =  AppCubit.get(context).business;
-        return NewsScreenBuilder(list);
+        return NewsScreenBuilder(list,context);
   },);
 }}
