@@ -8,22 +8,32 @@ import 'package:news_app/network/remote/dio_helper.dart';
 import 'package:news_app/styles/bloc_observer.dart';
 
 import 'layout/news_layout.dart';
+import 'network/local/cach_helper.dart';
 
-void main() {
+Future<void> main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
-  DioHelper.getData();
+  await CacheHelper.init();
+  bool isDark = CacheHelper.getBoolean(key: 'isDark');
 
-  runApp( MyApp());
+
+  runApp( MyApp(isDark));
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+
+  final bool isDark;
+
+   MyApp(this.isDark);
+
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AppCubit()..getBusinessData(),
+      create: (context) => AppCubit()..getBusinessData()..changeThemeMode(modeFromShared: isDark,),
       child: BlocConsumer<AppCubit,NewsStates>(
         listener: (context, state){},
         builder: (context, state) {
@@ -98,7 +108,7 @@ class MyApp extends StatelessWidget {
                 bodyLarge: TextStyle(
                   fontSize: 18.0,
                   color: Colors.white,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

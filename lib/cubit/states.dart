@@ -40,6 +40,18 @@ class NewsGetScienceDataErrorState extends NewsStates
   NewsGetScienceDataErrorState(this.error);
 }
 
+//Search
+class NewsGetSearchLoadingState extends NewsStates{}
+
+class NewsGetSearchDataSuccessState extends NewsStates{}
+
+class NewsGetSearchDataErrorState extends NewsStates
+{
+  final String error;
+
+  NewsGetSearchDataErrorState(this.error);
+}
+
 class AppChangeMode extends NewsStates{}
 
 

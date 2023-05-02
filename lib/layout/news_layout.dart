@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/cubit/cubit.dart';
 import 'package:news_app/cubit/states.dart';
+import 'package:news_app/modules/search/search_screen.dart';
 import 'package:news_app/network/remote/dio_helper.dart';
+import 'package:news_app/shared/componentes.dart';
 
 class NewsScreen extends StatelessWidget {
 
@@ -18,7 +20,9 @@ class NewsScreen extends StatelessWidget {
               'News App',
             ),
             actions: [
-              IconButton(onPressed: (){},icon: Icon(Icons.search,),),
+              IconButton(onPressed: (){
+                navigateTo(context, SearchScreen(),);
+              },icon: Icon(Icons.search,),),
               IconButton(onPressed: (){
                 AppCubit.get(context).changeThemeMode();
               },icon: Icon(Icons.brightness_4_outlined,),),

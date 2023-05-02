@@ -6,118 +6,150 @@ import 'package:news_app/modules/business_screen.dart';
 import 'package:news_app/modules/science_screen.dart';
 import 'package:news_app/modules/settings_screen.dart';
 import 'package:news_app/modules/sports_screen.dart';
+import 'package:news_app/network/local/cach_helper.dart';
 
 import '../network/remote/dio_helper.dart';
 
-class AppCubit extends Cubit<NewsStates>{
-  AppCubit(): super(NewsInitialState());
-static AppCubit get(context)=> BlocProvider.of(context);
+class AppCubit extends Cubit<NewsStates> {
+  AppCubit() : super(NewsInitialState());
 
-int currentIndex=0;
+  static AppCubit get(context) => BlocProvider.of(context);
 
-List<BottomNavigationBarItem> items=[
-  BottomNavigationBarItem(icon: Icon(Icons.business_outlined),label: 'Business'),
-  BottomNavigationBarItem(icon: Icon(Icons.sports_baseball),label: 'Sports'),
-  BottomNavigationBarItem(icon: Icon(Icons.science_outlined),label: 'Science'),
-  BottomNavigationBarItem(icon: Icon(Icons.settings),label: 'Settings'),
+  int currentIndex = 0;
 
+  List<BottomNavigationBarItem> items = [
+    BottomNavigationBarItem(
+        icon: Icon(Icons.business_outlined), label: 'Business'),
+    BottomNavigationBarItem(icon: Icon(Icons.sports_baseball), label: 'Sports'),
+    BottomNavigationBarItem(
+        icon: Icon(Icons.science_outlined), label: 'Science'),
+    BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+  ];
+  List<Widget> screens = [
+    BusinessScreen(),
+    SportsScreen(),
+    SciencesScreen(),
+    SettingsScreen(),
+  ];
 
-
-];
-List<Widget> screens =[
-  BusinessScreen(),
-  SportsScreen(),
-  SciencesScreen(),
-  SettingsScreen(),
-];
-
-void changeBottomNavBar(int index){
-  currentIndex = index;
-  emit(NewsBottomNavBarState());
-  if(currentIndex==1)
-    getSportsData();
-  else if(currentIndex==2)
-    getScienceData();
-}
-
-List <dynamic> business =[];
-void getBusinessData() {
-  emit(NewsGetBusinessLoadingState());
-  DioHelper.getData(
-    url: 'v2/top-headlines',
-    query:
-    {
-      'country':'us',
-      'category':'business',
-      'apiKey':'65f7f556ec76449fa7dc7c0069f040ca',
-    },
-  ).then((value) {
-    business = value.data['articles'];
-    print(business[0]['title']);
-
-    emit(NewsGetBusinessDataSuccessState());
-  }).catchError((error){
-    print(error.toString());
-    emit(NewsGetBusinessDataErrorState(error.toString()));
-  });
-}
-
-List <dynamic> sports =[];
-  void getSportsData() {
-    emit(NewsGetSportsLoadingState());
-   if(sports.length==0){
-     DioHelper.getData(
-       url: 'v2/top-headlines',
-       query:
-       {
-         'country':'us',
-         'category':'sports',
-         'apiKey':'65f7f556ec76449fa7dc7c0069f040ca',
-       },
-     ).then((value) {
-       sports = value.data['articles'];
-       print(sports[0]['title']);
-
-       emit(NewsGetSportsDataSuccessState());
-     }).catchError((error){
-       print(error.toString());
-       emit(NewsGetSportsDataErrorState(error.toString()));
-     });
-   } else{
-     emit(NewsGetSportsDataSuccessState());
-
-   }
+  void changeBottomNavBar(int index) {
+    currentIndex = index;
+    emit(NewsBottomNavBarState());
+    if (currentIndex == 1)
+      getSportsData();
+    else if (currentIndex == 2) getScienceData();
   }
 
-List <dynamic> science =[];
-  void getScienceData() {
-    emit(NewsGetScienceLoadingState());
-    if(science.length==0){
+  List<dynamic> business = [];
+
+  void getBusinessData() {
+    emit(NewsGetBusinessLoadingState());
+    DioHelper.getData(
+      url: 'v2/top-headlines',
+      query: {
+        'country': 'us',
+        'category': 'business',
+        'apiKey': '65f7f556ec76449fa7dc7c0069f040ca',
+      },
+    ).then((value) {
+      business = value.data['articles'];
+      print(business[0]['title']);
+
+      emit(NewsGetBusinessDataSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(NewsGetBusinessDataErrorState(error.toString()));
+    });
+  }
+
+  List<dynamic> sports = [];
+
+  void getSportsData() {
+    emit(NewsGetSportsLoadingState());
+    if (sports.length == 0) {
       DioHelper.getData(
         url: 'v2/top-headlines',
-        query:
-        {
-          'country':'us',
-          'category':'science',
-          'apiKey':'65f7f556ec76449fa7dc7c0069f040ca',
+        query: {
+          'country': 'us',
+          'category': 'sports',
+          'apiKey': '65f7f556ec76449fa7dc7c0069f040ca',
+        },
+      ).then((value) {
+        sports = value.data['articles'];
+        print(sports[0]['title']);
+
+        emit(NewsGetSportsDataSuccessState());
+      }).catchError((error) {
+        print(error.toString());
+        emit(NewsGetSportsDataErrorState(error.toString()));
+      });
+    } else {
+      emit(NewsGetSportsDataSuccessState());
+    }
+  }
+
+  List<dynamic> science = [];
+
+  void getScienceData() {
+    emit(NewsGetScienceLoadingState());
+    if (science.length == 0) {
+      DioHelper.getData(
+        url: 'v2/top-headlines',
+        query: {
+          'country': 'us',
+          'category': 'science',
+          'apiKey': '65f7f556ec76449fa7dc7c0069f040ca',
         },
       ).then((value) {
         science = value.data['articles'];
         print(science[0]['title']);
 
         emit(NewsGetScienceDataSuccessState());
-      }).catchError((error){
+      }).catchError((error) {
         print(error.toString());
         emit(NewsGetScienceDataErrorState(error.toString()));
       });
-    } else{
+    } else {
       emit(NewsGetScienceDataSuccessState());
     }
   }
 
- bool isDark = false;
-  changeThemeMode(){
-    isDark = !isDark;
-    emit(AppChangeMode());
+  bool isDark = false;
+
+  changeThemeMode({
+    bool modeFromShared,
+  }) {
+    if (modeFromShared != null) {
+      isDark = modeFromShared;
+      emit(AppChangeMode());
+    } else {
+      isDark = !isDark;
+      CacheHelper.putBoolean(key: 'isDark', value: isDark).then((value) {
+        emit(AppChangeMode());
+      });
+    }
+  }
+
+  List<dynamic> search = [];
+
+  void getSearch(String value) {
+   // search = [];
+    emit(NewsGetSearchLoadingState());
+    DioHelper.getData(
+      url: 'v2/everything',
+      query: {
+        'q': '$value',
+        'apiKey':'65f7f556ec76449fa7dc7c0069f040ca',
+      },
+    ).then((value) {
+      search = value.data['articles'];
+      print(search[0]['articles']);
+      emit(NewsGetSearchDataSuccessState());
+    }).catchError((error)
+    {
+      print(error.toString());
+      emit(NewsGetSearchDataErrorState(error.toString()));
+    });
+  }
 }
-}
+
